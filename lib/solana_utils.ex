@@ -2,7 +2,7 @@ defmodule SolanaUtils do
   require Logger
   import SolanaUtils.Config
 
-  def list_user_tokens(pubKey) do
+  def list_user_tokens(address_public_key) do
     filters = %{
       programId: spl_token_program_id()
     }
@@ -12,7 +12,7 @@ defmodule SolanaUtils do
       commitment: "processed"
     }
 
-    case SolanaUtils.Api.get_token_accounts_by_owner(pubKey, filters, options) do
+    case SolanaUtils.Api.get_token_accounts_by_owner(address_public_key, filters, options) do
       {:ok, %{body: response}} ->
         tokens = get_in(response, ["result", "value"]) || []
 
