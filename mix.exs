@@ -23,7 +23,7 @@ defmodule SolanaUtils.MixProject do
     [
       {:hackney, "~> 1.18.0"},
       {:solana, "~> 0.2.0"},
-      {:ed25519, "~> 1.3.3"},
+      {:ed25519, "~> 1.4.0"},
       {:borsh_ex, "~> 0.1.0"},
       {:elixir_uuid, "~> 1.2"}
     ]
