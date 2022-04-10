@@ -26,6 +26,33 @@ defmodule SolanaUtils do
     end
   end
 
+  def get_metadata_full(token) do
+    case get_metadata(token) do
+      %SolanaUtils.Metadata{} = metadata -> {metadata, fetch_uri_metadata(metadata)}
+      other -> other
+    end
+  end
+
+  defp fetch_uri_metadata(%SolanaUtils.Metadata{data: %SolanaUtils.Metadata.Data{uri: uri}})
+       when not is_nil(uri) do
+    :hackney.request(
+      :get,
+      uri,
+      [
+        {"Content-Type", "application/json"}
+      ],
+      "",
+      [
+        :with_body,
+        :follow_redirect
+      ] ++ [SolanaUtils.Hackney.options()]
+    )
+    |> case do
+      {:ok, 200, _, body} -> Jason.decode!(body)
+      _ -> nil
+    end
+  end
+
   def get_metadata(token) do
     account =
       case get_metadata_account_pda(token) do
