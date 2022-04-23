@@ -16,16 +16,19 @@ defmodule SolanaUtils do
       {:ok, %{body: response}} ->
         tokens = get_in(response, ["result", "value"]) || []
 
-        tokens
-        |> Enum.filter(
-          &(get_in(&1, ["account", "data", "parsed", "info", "tokenAmount", "uiAmount"]) >= 1)
-        )
-        |> Enum.map(&get_in(&1, ["account", "data", "parsed", "info", "mint"]))
-        |> Enum.reject(&is_nil/1)
+        tokens =
+          tokens
+          |> Enum.filter(
+            &(get_in(&1, ["account", "data", "parsed", "info", "tokenAmount", "uiAmount"]) >= 1)
+          )
+          |> Enum.map(&get_in(&1, ["account", "data", "parsed", "info", "mint"]))
+          |> Enum.reject(&is_nil/1)
+
+        {:ok, tokens}
 
       error ->
         Logger.error("[Solana] error #{inspect(error)}")
-        []
+        {:error, []}
     end
   end
 

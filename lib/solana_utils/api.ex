@@ -51,12 +51,12 @@ defmodule SolanaUtils.Api do
     |> handle_response()
   end
 
-  defp handle_response({:ok, status, _, body}) do
-    response = %{body: Jason.decode!(body), status: status}
+  defp handle_response({:ok, 200, _, body}) do
+    response = %{body: Jason.decode!(body), status: 200}
     {:ok, response}
   end
 
-  defp handle_response({:error, status, _, body}) do
+  defp handle_response({_, status, _, body}) do
     response = %{body: Jason.decode!(body), status: status}
     {:error, response}
   end
