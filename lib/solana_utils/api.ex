@@ -1,6 +1,5 @@
 defmodule SolanaUtils.Api do
   alias SolanaUtils.Api.Client
-  import SolanaUtils.Config
 
   @base_body %{
     jsonrpc: "2.0"

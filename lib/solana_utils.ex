@@ -92,7 +92,20 @@ defmodule SolanaUtils do
     mint = metadata.mint |> :binary.list_to_bin() |> B58.encode58()
     update_authority = metadata.update_authority |> :binary.list_to_bin() |> B58.encode58()
     data = humanize(metadata.data)
-    %{metadata | mint: mint, update_authority: update_authority, data: data}
+    collection = humanize(metadata.collection)
+
+    %{
+      metadata
+      | mint: mint,
+        update_authority: update_authority,
+        data: data,
+        collection: collection
+    }
+  end
+
+  defp humanize(%SolanaUtils.Metadata.Collection{} = collection) do
+    key = collection.key |> :binary.list_to_bin() |> B58.encode58()
+    %{collection | key: key}
   end
 
   defp humanize(%SolanaUtils.Metadata.Data{} = data) do

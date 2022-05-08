@@ -41,7 +41,8 @@ defmodule SolanaUtils.Metadata do
             data: nil,
             primary_sale_happened: nil,
             is_mutable: nil,
-            edition_nonce: nil
+            edition_nonce: nil,
+            collection: nil
 
   @keys [
     "Uninitialized",
@@ -71,7 +72,7 @@ defmodule SolanaUtils.Metadata do
     field(:primary_sale_happened, "boolean")
     field(:is_mutable, "boolean")
     field(:edition_nonce, {"option", "u8"})
-    field(:token_standard, {"option", @token_standards})
+    field(:token_standard, {"option", {"enum", @token_standards}})
     field(:collection, {"option", SolanaUtils.Metadata.Collection})
   end
 end
