@@ -124,6 +124,8 @@ defmodule SolanaUtils do
     %{creator | address: address}
   end
 
+  defp humanize(nil), do: nil
+
   def get_tokens_by_symbol(tokens) do
     tokens =
       Enum.map(tokens, &get_in(&1, ["account", "data", "parsed", "info", "mint"]))
