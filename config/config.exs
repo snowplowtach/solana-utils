@@ -2,6 +2,7 @@ import Config
 
 config :solana_utils, :solana,
   api_url: System.get_env("SOLANA_API_URL", "https://api.devnet.solana.com"),
+  api_referer: System.get_env("SOLANA_API_REFERER"),
   spl_token_program_id: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
   metadata_program_id: "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
 

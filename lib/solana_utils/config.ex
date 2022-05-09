@@ -7,6 +7,10 @@ defmodule SolanaUtils.Config do
     config(:api_url)
   end
 
+  def api_referer do
+    config(:api_referer)
+  end
+
   def metadata_program_id do
     config(:metadata_program_id)
   end

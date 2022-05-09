@@ -11,5 +11,17 @@ defmodule SolanaUtils.Api.Client do
     [
       {"Content-Type", "application/json"}
     ]
+    |> add_referer()
+  end
+
+  defp add_referer(headers) do
+    referer =
+      if referer = api_referer() do
+        [{"Referer", referer}]
+      else
+        []
+      end
+
+    headers ++ referer
   end
 end
