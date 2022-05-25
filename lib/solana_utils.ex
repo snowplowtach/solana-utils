@@ -68,18 +68,23 @@ defmodule SolanaUtils do
 
     if account do
       {:ok, response} = SolanaUtils.Api.get_account_info(account)
-      [data | _] = get_in(response.body, ["result", "value", "data"])
-      data_decoded = Base.decode64!(data)
-
-      metadata =
-        case SolanaUtils.Metadata.deserialize(data_decoded) do
-          {:ok, result} -> result
-          {:error, result, _} -> result
-        end
-
-      humanize(metadata)
+      decode_data(response.body)
     end
   end
+
+  defp decode_data(%{"result" => %{"value" => %{"data" => [data | _]}}}) do
+    data_decoded = Base.decode64!(data)
+
+    metadata =
+      case SolanaUtils.Metadata.deserialize(data_decoded) do
+        {:ok, result} -> result
+        {:error, result, _} -> result
+      end
+
+    humanize(metadata)
+  end
+
+  defp decode_data(_), do: nil
 
   defp get_metadata_account_pda(token) do
     Solana.Key.find_address(
