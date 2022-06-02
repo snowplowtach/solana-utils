@@ -34,8 +34,11 @@ defmodule SolanaUtils do
 
   def get_metadata_full(token) do
     case get_metadata(token) do
-      %SolanaUtils.Metadata{} = metadata -> {metadata, fetch_uri_metadata(metadata)}
-      other -> other
+      %SolanaUtils.Metadata{} = metadata ->
+        %{metadata | uri_metadata: fetch_uri_metadata(metadata)}
+
+      other ->
+        other
     end
   end
 

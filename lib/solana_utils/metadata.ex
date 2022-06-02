@@ -42,7 +42,8 @@ defmodule SolanaUtils.Metadata do
             primary_sale_happened: nil,
             is_mutable: nil,
             edition_nonce: nil,
-            collection: nil
+            collection: nil,
+            uri_metadata: nil
 
   @keys [
     "Uninitialized",
