@@ -123,7 +123,11 @@ defmodule SolanaUtils do
     symbol =
       data.symbol |> :binary.bin_to_list() |> Enum.reject(&(&1 == 0)) |> :binary.list_to_bin()
 
-    creators = Enum.map(data.creators, &humanize/1)
+    creators =
+      if data.creators do
+        Enum.map(data.creators, &humanize/1)
+      end
+
     %{data | name: name, uri: uri, symbol: symbol, creators: creators}
   end
 
