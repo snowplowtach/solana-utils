@@ -44,6 +44,13 @@ defmodule SolanaUtils do
 
   defp fetch_uri_metadata(%SolanaUtils.Metadata{data: %SolanaUtils.Metadata.Data{uri: uri}})
        when not is_nil(uri) do
+    case URI.new(uri) do
+      {:ok, %URI{host: nil, scheme: nil}} -> nil
+      _ -> do_fetch_uri_metadata(uri)
+    end
+  end
+
+  defp do_fetch_uri_metadata(uri) do
     :hackney.request(
       :get,
       uri,
