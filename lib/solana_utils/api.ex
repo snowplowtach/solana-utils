@@ -35,6 +35,21 @@ defmodule SolanaUtils.Api do
     |> handle_response()
   end
 
+  def get_multiple_accounts_info(public_keys, options \\ %{encoding: "jsonParsed"}) do
+    body =
+      Map.merge(@base_body, %{
+        method: "getMultipleAccounts",
+        params: [
+          public_keys,
+          options
+        ],
+        id: UUID.uuid4()
+      })
+
+    Client.request(body)
+    |> handle_response()
+  end
+
   def get_account_info(public_key, options \\ %{encoding: "jsonParsed"}) do
     body =
       Map.merge(@base_body, %{

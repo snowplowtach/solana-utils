@@ -32,10 +32,14 @@ defmodule SolanaUtils do
     end
   end
 
+  def get_metadata_full(%SolanaUtils.Metadata{} = metadata) do
+    %{metadata | uri_metadata: fetch_uri_metadata(metadata)}
+  end
+
   def get_metadata_full(token) do
     case get_metadata(token) do
       %SolanaUtils.Metadata{} = metadata ->
-        %{metadata | uri_metadata: fetch_uri_metadata(metadata)}
+        get_metadata_full(metadata)
 
       other ->
         other
@@ -69,6 +73,30 @@ defmodule SolanaUtils do
     end
   end
 
+  def get_multiple_metadata_full(tokens) do
+    metadatas = get_multiple_metadata(tokens) |> Enum.reject(&is_nil/1)
+
+    Enum.map(metadatas, fn metadata ->
+      Task.async(fn -> get_metadata_full(metadata) end)
+    end)
+    |> Enum.map(&Task.await(&1, 20_000))
+  end
+
+  def get_multiple_metadata(tokens) do
+    accounts =
+      Enum.map(tokens, fn token ->
+        case get_metadata_account_pda(token) do
+          {:ok, account, _nonce} -> B58.encode58(account)
+          _ -> nil
+        end
+      end)
+      |> Enum.reject(&is_nil/1)
+
+    {:ok, response} = SolanaUtils.Api.get_multiple_accounts_info(accounts)
+
+    decode_data(response.body)
+  end
+
   def get_metadata(token) do
     account =
       case get_metadata_account_pda(token) do
@@ -82,7 +110,19 @@ defmodule SolanaUtils do
     end
   end
 
+  defp decode_data(%{"result" => %{"value" => value}}) when is_list(value) do
+    Enum.map(value, &decode_data/1)
+  end
+
+  defp decode_data(%{"data" => [data | _]}) do
+    decode_data(data)
+  end
+
   defp decode_data(%{"result" => %{"value" => %{"data" => [data | _]}}}) do
+    decode_data(data)
+  end
+
+  defp decode_data(data) when is_binary(data) do
     data_decoded = Base.decode64!(data)
 
     metadata =
